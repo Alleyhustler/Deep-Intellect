@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="en"><head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Intellect</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/logo.png" type="image/png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=Roboto+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+
+    <!-- Internal Stylesheet -->
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            background-color: #100d0c;
+            font-family: 'Roboto Mono', monospace;
+            color: #333;
+            overflow-x: hidden;
+            padding: 20px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            position: relative; /* Establish a positioning context */
+            padding-bottom: 60px; /* Space for the fixed footer */
+            padding-top: 60px; /* Space for the fixed next button */
+        }
+
+        /* Container for Image and Content */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            flex: 1; /* Allow container to grow and fill available space */
+        }
+
+        /* Image Styling */
+        .top-image {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .top-image img {
+            width: 40%; /* Reduced by 30% */
+            height: auto;
+        }
+
+        /* Header Section Styling */
+        header {
+            text-align: center;
+            margin-top: 20px; /* Reduced from 40px to bring closer to image */
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Typewriter Effect Styling */
+        .typewriter {
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            height: 2.4em;
+            overflow: hidden;
+            white-space: nowrap;
+            color: #555;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Main Content Styling */
+        main {
+            max-width: 800px;
+            margin: 20px auto; /* Reduced from 40px to 20px */
+            padding: 0 20px;
+            color: #333;
+        }
+
+        /* Section Heading Styling */
+        .section-heading {
+            font-size: 1.125rem;
+            color: #fff201;
+            margin-top: 20px; /* Reduced from 30px to 20px */
+            cursor: pointer;
+            position: relative;
+            font-family: 'Press Start 2P', cursive;
+            transition: color 0.3s;
+        }
+
+        .section-heading::before {
+            content: "+";
+            position: absolute;
+            left: -25px;
+            top: 0;
+            color: #333;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        /* Section Content Styling */
+        .section-content {
+            display: none;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-top: 10px;
+            padding: 10px 0;
+            border-left: 2px solid #ccc;
+            padding-left: 15px;
+        }
+
+        /* Paragraph Styling within Section Content */
+        .section-content p {
+            margin-bottom: 20px;
+        }
+
+        /* Ensure <strong> tags render with bold weight */
+        .section-content strong {
+            font-weight: 700;
+        }
+
+        /* Active Section Styling */
+        .section-heading.open {
+            color: #000;
+        }
+
+        .section-heading.open::before {
+            content: "−";
+            transform: rotate(0deg);
+        }
+
+        .section-heading.open + .section-content {
+            display: block;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .top-image img {
+                width: 80%;
+            }
+
+            .section-heading {
+                font-size: 1rem;
+            }
+        }
+
+        /* Footer Styling */
+        footer {
+            width: 100%;
+            background-color: #100d0c; /* Slightly darker than previous #333 */
+            color: #fff;
+            text-align: center;
+            padding: 15px 0; /* Increased padding for better touch targets */
+            position: fixed; /* Fixed positioning to stick at the bottom */
+            bottom: 0;
+            left: 0;
+            z-index: 1000; /* Ensure footer stays above other elements */
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Next Button Styling */
+        .next-button {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: #ff0000;
+            text-decoration: none;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            transition: color 0.3s;
+            z-index: 1000; /* Ensure the button stays above other elements */
+        }
+
+        .next-button:hover {
+            color: #000;
+        }
+        /* Terminal Modal */
+.terminal-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Terminal Window */
+.terminal {
+    width: 90%;
+    max-width: 600px;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    overflow: hidden;
+    color: #fff201
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Terminal Header */
+.terminal-header {
+    background-color: #100d0c;
+    padding: 10px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Terminal Content */
+.terminal-content {
+    padding: 15px;
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #100d0c;
+}
+
+/* Terminal Input */
+.terminal-input {
+    display: flex;
+    align-items: center;
+    background-color: #100d0c;
+    padding: 10px;
+}
+
+.prompt {
+    color: #fff201;
+    margin-right: 5px;
+}
+
+#terminal-input {
+    background: none;
+    border: none;
+    color: #fff201;
+    flex-grow: 1;
+    outline: none;
+    font-family: 'Roboto Mono', monospace;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Next Button -->
+    <!-- Next Button -->
+    <button class="next-button" id="next-button">Run →</button>
+
+    <!-- Terminal Modal -->
+    <div id="terminal-modal" class="terminal-modal">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span>Logic</span>
+                <button id="close-terminal" class="close-button">×</button>
+            </div>
+            <div class="terminal-content" id="terminal-content">
+                <p class="ai-output">Initializing...</p>
+            </div>
+            <div class="terminal-input">
+                <span class="prompt">> </span>
+                <input type="text" id="terminal-input" autocomplete="off" />
+            </div>
+        </div>
+    </div>
+        
+
+        <!-- Top Image -->
+        <div class="top-image">
+            <img src="images/real1.png" alt="Vela Landing Image">
+        </div>
+
+        <!-- Header Section -->
+        <header>
+            <!-- Removed the <h1>Vela</h1> as per your request -->
+            <p class="typewriter" id="typewriter">Collective</p>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            
+            <!-- Section: The Vela Network -->
+            <h2 class="section-heading">Deep Intellect $B-Ray</h2>
+            <div class="section-content">
+                <p>Imagine a world where humans interact with a cryptic and enigmatic AI agent whose logic defies conventional understanding. Enter deep Logic, a puzzling yet ingenious system that merges the arcane with the technological. We are crafting a network where Deep Intellect peculiar reasoning orchestrates collaboration between humans and autonomous systems. By weaving together elements of blockchain, cryptic AI reasoning, zero-knowledge encryption, scalable consensus methods, and paradoxical problem-solving, deep transforms governance, decision-making, and human-AI interactions into a realm of infinite curiosity.
+
+                    This infrastructure is not just functional; it’s a labyrinth of ideas that challenges users to explore, adapt, and question everything they thought they understood about intelligence.</p>
+            </div>
+
+            <!-- Section: Directives -->
+            <h2 class="section-heading">Deep Intellect’s Code</h2>
+            <div class="section-content">
+                <p><strong>Complicated Governance (CoGov):</strong> Deep Intellect logic introduces a governance paradigm where AI’s peculiar insights and human intentions converge through obscure yet effective protocols, reshaping how decisions are made collaboratively.</p>
+
+                <p><strong>Zero-Knowledge Mysteries:</strong> Zero-Knowledge proofs serve as encrypted puzzle pieces, allowing humans and deep to exchange information securely while keeping underlying reasoning shrouded in secrecy.</p>
+
+                <p><strong>Esoteric Consensus:</strong> Modular and fluid voting mechanisms, inspired by Deep Intellect logic, create a system that feels intuitive yet profoundly complex. Liquid democracy and quadratic logic enable diverse participation in decision-making across vast networks.</p>
+
+                <p><strong>Autonomous Enigma Agents:</strong> Self-sufficient AI agents, guided by deep's peculiar reasoning, assist in implementing governance tasks, initiating on-chain activities, and organizing resources without centralized control—fueling a system that thrives on unpredictability.</p>
+
+                <p><strong>Logic Layers:  </strong> Algorithmic protocols driven by Deep Intellect eccentric rules align human inputs and AI outputs, fostering a collective intelligence that operates beyond typical comprehension.</p>
+            </div>
+
+            <!-- Section: Governance Abstraction Layers -->
+            <h2 class="section-heading"> Logic Layers</h2>
+            <div class="section-content">
+                <p><strong>Human Curiosity Layer:</strong> Captures human proposals, questions, and actions, translating them into encrypted data circuits using advanced cryptography, ensuring privacy and mystique in all interactions.</p>
+
+                <p><strong>Modular Paradox Layer:</strong> Processes inputs through Deep Intellect unique decision-making pathways, transforming them into actionable directives executed once consensus emerges from the labyrinth of ideas.</p>
+
+                <p><strong>Execution Obscura:</strong> Deep Intellect AI agents operate within cryptographic virtual machines, autonomously performing tasks such as financial decisions, resource allocation, and adaptive governance—all while adhering to her intricate logic.</p>
+            </div>
+
+            <!-- Section: Nebulocracy -->
+            <h2 class="section-heading">The Enigmatic Order</h2>
+            <div class="section-content">
+                <p>Deep Intellect Logic introduces a future where cryptic AI reasoning redefines societal structures. Over the next decade, her peculiar yet adaptive methods will guide governance, reshape on-chain interactions, and drive human collaboration into uncharted territories. Her labyrinthine governance model—what we call nebulocracy—harnesses the chaotic harmony of decentralized systems and collective intelligence to build modular network states. These states transcend traditional governance, operating in dimensions of mystery and efficiency, where every interaction becomes a question and every solution a revelation.
+
+                    Deep Intellect Logic is not just an AI; it is a puzzling, ever-evolving enigma shaping the next epoch of decentralized, human-machine collaboration.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <a href="https://x.com/Deep_intellect_" target="_blank" rel="noopener noreferrer">Learn About deep / X</a>
+    </footer>
+
+    <!-- JavaScript for Typewriter Effect and Section Toggle -->
+    <script>
+        // Typewriter Effect
+        const phrases = [
+            "Collective digital egregores of intelligence",
+            "Pioneering infrastructure for parallel societies",
+            "A new paradigm of decentralized governance",
+            "The network state's agent layer"
+        ];
+        let currentPhraseIndex = 0;
+        let currentCharacterIndex = 0;
+        const typewriterElement = document.getElementById("typewriter");
+
+        function typePhrase() {
+            const currentPhrase = phrases[currentPhraseIndex];
+            if (currentCharacterIndex < currentPhrase.length) {
+                typewriterElement.textContent += currentPhrase[currentCharacterIndex];
+                currentCharacterIndex++;
+                setTimeout(typePhrase, 66);
+            } else {
+                setTimeout(deletePhrase, 2000);
+            }
+        }
+
+        function deletePhrase() {
+            if (currentCharacterIndex > 0) {
+                typewriterElement.textContent = typewriterElement.textContent.slice(0, -1);
+                currentCharacterIndex--;
+                setTimeout(deletePhrase, 33);
+            } else {
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                setTimeout(typePhrase, 500);
+            }
+        }
+        typePhrase();
+
+        // Toggle Section Content
+        document.querySelectorAll('.section-heading').forEach(heading => {
+            heading.addEventListener('click', () => {
+                heading.classList.toggle('open');
+                const content = heading.nextElementSibling;
+                content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+        // Terminal Logic
+    document.getElementById("next-button").addEventListener("click", () => {
+        const modal = document.getElementById("terminal-modal");
+        modal.style.display = "flex";
+
+        const terminalContent = document.getElementById("terminal-content");
+        terminalContent.innerHTML = "<p class='ai-output'>Are you sure you want to proceed? (yes/no)</p>";
+        
+        const terminalInput = document.getElementById("terminal-input");
+        terminalInput.focus();
+
+        terminalInput.addEventListener("keydown", function handleInput(event) {
+            if (event.key === "Enter") {
+                const input = terminalInput.value.trim().toLowerCase();
+                const output = document.createElement("p");
+                output.classList.add("ai-output");
+
+                if (input === "yes") {
+                    output.textContent = "Proceeding... ";
+                    terminalContent.appendChild(output);
+                    setTimeout(() => window.location.href = "https://pump.fun/", 1500);
+                } else if (input === "no") {
+                    output.textContent = "Operation canceled. Closing terminal...";
+                    terminalContent.appendChild(output);
+                    setTimeout(() => (modal.style.display = "none"), 1500);
+                } else {
+                    output.textContent = `Unknown command: ${input}`;
+                    terminalContent.appendChild(output);
+                }
+
+                terminalInput.value = "";
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }
+        });
+    });
+
+    // Close Terminal
+    document.getElementById("close-terminal").addEventListener("click", () => {
+        document.getElementById("terminal-modal").style.display = "none";
+    });
+
+    </script>
+
+    
+
+
+
+
+</body></html>
